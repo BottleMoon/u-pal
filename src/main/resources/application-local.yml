@@ -12,3 +12,8 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create
+
+jwt:
+  secret: YXNrbGVqZmFobHdlanVmaGF3bGV1aWZoYWx3ZWl1Zmhhd2VsaXVmaGF3ZWxpZmhhd2VmbGl1YWh3ZWZhbHdpZXVmaAo=
+  token-validity-in-second: 600
+  refresh-token-validity-in-day: 3
