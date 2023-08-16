@@ -1,7 +1,7 @@
 package me.project.upal.service
 
 import jakarta.annotation.PostConstruct
-import me.project.upal.entity.Member
+import me.project.upal.dto.auth.SignUpRequest
 import me.project.upal.entity.Role
 import me.project.upal.repository.MemberRepository
 import me.project.upal.repository.RoleRepository
@@ -23,11 +23,14 @@ class InitDB(private val memberRepository: MemberRepository,
 
 
         for (i: Int in 0..99) {
-            val member = Member(email = "email$i",
+            var dto = SignUpRequest(
+                    email = "email${i}",
                     password = "123123",
-                    phoneNumber = "phoneNumber$i",
-                    nickName = "nickName$i",
-                    age = i)
+                    phoneNumber = "phoneNumber${i}",
+                    nickName = "nickName${i}",
+                    age = i
+            )
+            val member = dto.toEntity()
             member.roles.add(roleUser)
             memberRepository.save(member)
         }
