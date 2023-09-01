@@ -11,6 +11,7 @@ class Member(
         phoneNumber: String,
         nickName: String,
         age: Int,
+        country: Country
 ) {
     @Id
     @Column
@@ -35,6 +36,14 @@ class Member(
     @Column
     var age: Int = age
         private set
+
+    @ManyToOne
+    var country: Country = country
+        private set
+
+    @OneToOne
+    lateinit var location: Location
+
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

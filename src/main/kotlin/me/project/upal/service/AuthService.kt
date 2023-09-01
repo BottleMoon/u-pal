@@ -4,9 +4,11 @@ import me.project.upal.dto.auth.SignInRequest
 import me.project.upal.dto.auth.SignUpRequest
 import me.project.upal.dto.auth.SignUpResponse
 import me.project.upal.dto.auth.TokenDto
+import me.project.upal.entity.Member
 import me.project.upal.entity.RefreshToken
 import me.project.upal.entity.Role
 import me.project.upal.jwt.JwtTokenProvider
+import me.project.upal.repository.CountryRepository
 import me.project.upal.repository.MemberRepository
 import me.project.upal.repository.RefreshTokenRepository
 import org.springframework.http.HttpStatus
@@ -15,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -24,7 +27,7 @@ class AuthService(
         private val memberRepository: MemberRepository,
         private val refreshTokenRepository: RefreshTokenRepository,
         private val jwtTokenProvider: JwtTokenProvider,
-        private val authenticationManageBuilder: AuthenticationManagerBuilder
+        private val authenticationManageBuilder: AuthenticationManagerBuilder, private val countryRepository: CountryRepository,
 ) {
 
     fun authenticate(signInRequest: SignInRequest): ResponseEntity<TokenDto> {
@@ -41,7 +44,16 @@ class AuthService(
     }
 
     fun signUp(signUpRequest: SignUpRequest): ResponseEntity<SignUpResponse> {
-        val member = memberRepository.save(signUpRequest.toEntity())
+        val member = memberRepository.save(
+                Member(
+                        email = signUpRequest.email,
+                        password = BCryptPasswordEncoder().encode(signUpRequest.password),
+                        phoneNumber = signUpRequest.phoneNumber,
+                        nickName = signUpRequest.nickName,
+                        age = signUpRequest.age,
+                        country = countryRepository.findById(signUpRequest.country).orElseThrow()
+                )
+        )
         member.roles.add(Role("ROLE_USER"))
         return ResponseEntity(SignUpResponse(member), HttpStatus.OK)
     }

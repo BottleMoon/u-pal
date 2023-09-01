@@ -18,6 +18,9 @@ import java.util.*
 @Transactional
 class AuthServiceTest {
     @MockK
+    private lateinit var memberService: MemberService
+
+    @MockK
     private lateinit var memberRepository: MemberRepository
 
     @MockK
@@ -40,9 +43,10 @@ class AuthServiceTest {
                 password = "password",
                 phoneNumber = "phoneNumber",
                 nickName = "nickName",
-                age = 1
+                age = 1,
+                country = "한국"
         )
-        val member = signUpRequest.toEntity()
+        val member = memberService.dtoToEntity(signUpRequest)
         every { memberRepository.save(any()) } returns member
         every { memberRepository.findById(any()) } returns Optional.of(member)
         //when

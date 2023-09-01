@@ -6,6 +6,7 @@ import me.project.upal.dto.auth.SignUpRequest
 import me.project.upal.dto.auth.TokenDto
 import me.project.upal.jwt.JwtTokenProvider
 import me.project.upal.repository.MemberRepository
+import me.project.upal.service.MemberService
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,6 +26,9 @@ class AuthControllerTest {
     private lateinit var mockMvc: MockMvc
 
     @Autowired
+    private lateinit var memberService: MemberService
+
+    @Autowired
     private lateinit var memberRepository: MemberRepository
 
     @Autowired
@@ -33,14 +37,15 @@ class AuthControllerTest {
     @Test
     fun signIn() {
         //given
-        val SignUpRequest = SignUpRequest(
+        val signUpRequest = SignUpRequest(
                 email = "email",
                 password = "password",
                 phoneNumber = "phoneNumber",
                 nickName = "nickName",
-                age = 1
+                age = 1,
+                country = "한국"
         )
-        val member = SignUpRequest.toEntity()
+        val member = memberService.dtoToEntity(signUpRequest)
 
         memberRepository.save(member)
 
