@@ -6,7 +6,7 @@ import java.util.*
 data class SignUpResponse(
         var id: UUID,
         var email: String,
-        var phoneNumber: String,
+        var phoneNumber: String?,
         var nickName: String,
         var age: Int
 ) {

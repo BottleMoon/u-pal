@@ -8,7 +8,7 @@ import java.util.*
 class Member(
         email: String,
         password: String,
-        phoneNumber: String,
+        phoneNumber: String?,
         nickName: String,
         age: Int,
         country: Country
@@ -26,7 +26,7 @@ class Member(
         private set
 
     @Column(unique = true)
-    var phoneNumber: String = phoneNumber
+    var phoneNumber: String? = phoneNumber
         private set
 
     @Column(nullable = false)

@@ -34,6 +34,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
+    // SMTP
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+
     // opencsv
     implementation("com.opencsv:opencsv:5.7.1")
 
