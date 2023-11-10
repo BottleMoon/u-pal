@@ -4,13 +4,9 @@ import me.project.upal.dto.auth.SignInRequest
 import me.project.upal.dto.auth.SignUpRequest
 import me.project.upal.dto.auth.SignUpResponse
 import me.project.upal.dto.auth.TokenDto
-import me.project.upal.entity.Member
-import me.project.upal.entity.RefreshToken
-import me.project.upal.entity.Role
+import me.project.upal.entity.*
 import me.project.upal.jwt.JwtTokenProvider
-import me.project.upal.repository.CountryRepository
-import me.project.upal.repository.MemberRepository
-import me.project.upal.repository.RefreshTokenRepository
+import me.project.upal.repository.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -27,7 +23,7 @@ class AuthService(
         private val memberRepository: MemberRepository,
         private val refreshTokenRepository: RefreshTokenRepository,
         private val jwtTokenProvider: JwtTokenProvider,
-        private val authenticationManageBuilder: AuthenticationManagerBuilder, private val countryRepository: CountryRepository,
+        private val authenticationManageBuilder: AuthenticationManagerBuilder, private val countryRepository: CountryRepository, private val tagRepository: TagRepository, private val interestCountryRepository: InterestCountryRepository, private val interestTagRepository: InterestTagRepository, private val interestRepository: InterestRepository,
 ) {
 
     fun authenticate(signInRequest: SignInRequest): ResponseEntity<TokenDto> {
@@ -44,6 +40,8 @@ class AuthService(
     }
 
     fun signUp(signUpRequest: SignUpRequest): ResponseEntity<SignUpResponse> {
+
+
         val member = memberRepository.save(
                 Member(
                         email = signUpRequest.email,
@@ -55,6 +53,15 @@ class AuthService(
                 )
         )
         member.roles.add(Role("ROLE_USER"))
+        val interest: Interest = interestRepository.save(Interest(member))
+        for (country: String in signUpRequest.interestCountries) {
+            val interestCountry = InterestCountry(countryRepository.findById(country).orElseThrow(), interest)
+            interestCountryRepository.save(interestCountry)
+        }
+        for (tag: String in signUpRequest.interestTags) {
+            val interestTag = InterestTag(tagRepository.findByTag(tag).orElseThrow(), interest)
+            interestTagRepository.save(interestTag)
+        }
         return ResponseEntity(SignUpResponse(member), HttpStatus.OK)
     }
 

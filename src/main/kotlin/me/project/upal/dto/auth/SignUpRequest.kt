@@ -6,5 +6,7 @@ data class SignUpRequest(
         val phoneNumber: String,
         val nickName: String,
         val age: Int,
-        val country: String
+        val country: String,
+        val interestTags: List<String>,
+        val interestCountries: List<String>
 )

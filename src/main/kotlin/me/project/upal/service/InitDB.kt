@@ -5,9 +5,8 @@ import jakarta.annotation.PostConstruct
 import me.project.upal.entity.Country
 import me.project.upal.entity.Member
 import me.project.upal.entity.Role
-import me.project.upal.repository.CountryRepository
-import me.project.upal.repository.MemberRepository
-import me.project.upal.repository.RoleRepository
+import me.project.upal.entity.Tag
+import me.project.upal.repository.*
 import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
@@ -20,15 +19,20 @@ import java.io.FileReader
 class InitDB(
         private val memberRepository: MemberRepository,
         private val roleRepository: RoleRepository,
-        private val countryRepository: CountryRepository) {
+        private val countryRepository: CountryRepository,
+        private val tagRepository: TagRepository,
+        private val interestTagRepository: InterestTagRepository,
+        private val interestCountryRepository: InterestCountryRepository,
+        private val interestRepository: InterestRepository) {
 
     @PostConstruct
     fun init() {
-        loadCsv()
-        createMember()
+        createCountries()
+        createTags()
+        createMembers()
     }
 
-    fun loadCsv() {
+    fun createCountries() {
         val csvReader: CSVReader = CSVReader(FileReader("src/main/resources/countries.csv"))
         val countries: MutableList<Country> = mutableListOf();
         csvReader.readNext()
@@ -36,7 +40,13 @@ class InitDB(
         countryRepository.saveAll(countries)
     }
 
-    fun createMember() {
+    fun createTags() {
+        val tags: List<String> = listOf("korean", "kpop", "friend")
+        tagRepository.saveAll(tags.map { tag -> Tag(tag) }.toList())
+    }
+
+
+    fun createMembers() {
 
         var roleUser = Role("ROLE_USER")
         var roleAdmin = Role("ROLE_ADMIN")

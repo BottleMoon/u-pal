@@ -16,4 +16,9 @@ class MemberController(private val memberService: MemberService) {
     fun recommend(pageable: Pageable): Page<MemberResponse> {
         return memberService.recommend(pageable)
     }
+
+    @GetMapping("/confirm")
+    fun confirmEmail(email: String) {
+        //TODO: 이메일 확인
+    }
 }

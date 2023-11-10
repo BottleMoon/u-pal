@@ -43,7 +43,9 @@ class AuthControllerTest {
                 phoneNumber = "phoneNumber",
                 nickName = "nickName",
                 age = 1,
-                country = "한국"
+                country = "한국",
+                interestTags = listOf("친구"),
+                interestCountries = listOf("KR")
         )
         val member = memberService.dtoToEntity(signUpRequest)
 
